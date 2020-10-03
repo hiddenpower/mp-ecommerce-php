@@ -1,3 +1,15 @@
+<?php
+	//SDK MercadoPago y credenciales
+	require 'vendor/autoload.php';
+	$AccessToken = 'APP_USR-1159009372558727-072921-8d0b9980c7494985a5abd19fbe921a3d-617633181';
+	MercadoPago\SDK::initialize();
+	MercadoPago\SDK::setAccessToken($AccessToken);
+	MercadoPago\SDK::setPlatformId("PLATFORM_ID");
+	MercadoPago\SDK::setIntegratorId("dev_24c65fb163bf11ea96500242ac130004");
+	MercadoPago\SDK::setCorporationId("CORPORATION_ID");
+	$config = MercadoPago\SDK::config();
+?>
+
 <!DOCTYPE html>
 <html class="supports-animation supports-columns svg no-touch no-ie no-oldie no-ios supports-backdrop-filter as-mouseuser" lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
@@ -11,6 +23,9 @@
     src="https://code.jquery.com/jquery-3.4.1.min.js"
     integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
     crossorigin="anonymous"></script>
+	
+	<!-- Código de seguridad -->
+	<script src="https://www.mercadopago.com/v2/security.js" view="detail.php"></script>
 
     <link rel="stylesheet" href="./assets/category-landing.css" media="screen, print">
 
@@ -130,7 +145,76 @@
                                             <?php echo "$" . $_POST['unit'] ?>
                                         </h3>
                                     </div>
-                                    <button type="submit" class="mercadopago-button" formmethod="post">Pagar</button>
+									<?php 
+										//Nueva Preferencia
+										$preference = new MercadoPago\Preference();
+										
+										//Nuevo Pagador
+										$payer = new MercadoPago\Payer();
+										$payer->name 		= "Lalo";
+										$payer->surname 	= "Landa";
+										$payer->email 		= "test_user_58295862@testuser.com";
+										$payer->phone 		= array(
+											"area_code" 		=> "52",
+											"number" 			=> "5549737300"
+											);
+										$payer->identification = array(
+											"type" 				=> "DNI",
+											"number" 			=> "12345678"
+											);
+
+										$payer->address = array(
+											"street_name" 		=> "Insurgentes Sur",
+											"street_number" 	=> 1602,
+											"zip_code" 			=> "03940"
+											);
+
+										$preference->payer = $payer;
+										
+										//Nuevo item
+										
+										$item = new MercadoPago\Item();
+										$item->id 				= "1234";
+										$item->title 			= $_POST['title'];
+										$item->description 		= "Dispositivo móvil de Tienda e-commerce";
+										$item->quantity 		= $_POST['unit'];
+										$item->unit_price 		= $_POST['price'];
+										$item->picture_url		= $_SERVER['HTTP_REFERER'].$_POST['img'];
+
+										$preference->items = array($item);
+										
+										//Metodos de pago
+										
+										$preference->payment_methods = array(									
+											"excluded_payment_methods" => array(
+												array("id" => "amex")
+												),
+											"excluded_payment_types" => array(
+												array("id" => "atm")
+												),
+											"installments" => 6
+											);
+											
+										//URL's de retorno
+										
+										$preference->back_urls = array(										
+											"success" => "https://hiddenpower-mp-ecommerce-php.herokuapp.com/respuesta.php?status=success",
+											"failure" => "https://hiddenpower-mp-ecommerce-php.herokuapp.com/respuesta.php?status=failure",
+											"pending" => "https://hiddenpower-mp-ecommerce-php.herokuapp.com/respuesta.php?status=pending");
+										$preference->auto_return = "approved";
+
+										//Referencia externa
+										
+										$preference->external_reference = "gusxsandoval@gmail.com";
+										$preference->notification_url="https://hiddenpower-mp-ecommerce-php.herokuapp.com/webhook.php";
+										$preference->save();
+										
+										//Botón de pago
+										
+										echo "<a href='$preference->init_point'>
+										<button type='button' class='mercadopago-button' formmethod='post'>Pagar la compra</button>
+										</a>";
+									?>
                                 </div>
                             </div>
                         </div>
