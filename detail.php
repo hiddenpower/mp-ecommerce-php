@@ -158,11 +158,7 @@
 											"area_code" 		=> "52",
 											"number" 			=> "5549737300"
 											);
-										$payer->identification = array(
-											"type" 				=> "DNI",
-											"number" 			=> "12345678"
-											);
-
+								
 										$payer->address = array(
 											"street_name" 		=> "Insurgentes Sur",
 											"street_number" 	=> 1602,
