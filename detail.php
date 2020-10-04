@@ -197,7 +197,7 @@
 											"success" => "https://hiddenpower-mp-ecommerce-php.herokuapp.com/respuesta.php?status=success",
 											"failure" => "https://hiddenpower-mp-ecommerce-php.herokuapp.com/respuesta.php?status=failure",
 											"pending" => "https://hiddenpower-mp-ecommerce-php.herokuapp.com/respuesta.php?status=pending");
-										$preference->auto_return = "approved";
+										$preference->auto_return = "all";
 
 										//Referencia externa
 										
